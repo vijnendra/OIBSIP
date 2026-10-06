@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920,height=1080">
+  <meta name="description" content="Customer Segmentation Analysis — Oasis Infobyte Data Analytics Internship Level 1 Task 2">
+  <title>Customer Segmentation Analysis — Oasis Infobyte</title>
+  <link rel="stylesheet" href="../shared-styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="presentation">
+
+    <!-- ═══ SLIDE 1 — TITLE CARD ═══ -->
+    <div class="slide title-card active" id="slide-1">
+      <div class="org-badge reveal">
+        <span class="dot"></span>
+        OASIS INFOBYTE · DATA ANALYTICS INTERNSHIP
+      </div>
+      <h1 class="reveal reveal-delay-1">Customer Segmentation<br>Analysis</h1>
+      <p class="subtitle reveal reveal-delay-2">Applying K-Means clustering on RFM metrics to identify distinct customer segments for targeted marketing</p>
+      <div class="meta-row reveal reveal-delay-3">
+        <div class="meta-item">
+          <span class="meta-label">Intern</span>
+          <span class="meta-value">Vinny</span>
+        </div>
+        <span class="divider-dot"></span>
+        <div class="meta-item">
+          <span class="meta-label">Level</span>
+          <span class="meta-value">Level 1 — Task 2</span>
+        </div>
+        <span class="divider-dot"></span>
+        <div class="meta-item">
+          <span class="meta-label">Tools</span>
+          <span class="meta-value">Python · Scikit-learn · K-Means · RFM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 2 — BUSINESS PROBLEM ═══ -->
+    <div class="slide" id="slide-2">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🎯</div>
+        <h2>The Business Problem</h2>
+        <span class="slide-tag">Why Segment?</span>
+      </div>
+      <div class="slide-body" style="justify-content:center;align-items:center;">
+        <div class="summary-flow reveal reveal-delay-1" style="margin-bottom:32px;">
+          <div class="flow-step">📦 Transactional Data</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">🔍 Customer Behavior</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">📊 Segments</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">🎯 Targeted Marketing</div>
+        </div>
+        <div class="content-grid grid-3 reveal reveal-delay-2" style="max-width:1100px;">
+          <div class="card">
+            <div class="card-header"><div class="card-icon">📁</div><h3>Dataset</h3></div>
+            <div class="card-content">
+              <ul class="bullet-list">
+                <li>UCI Online Retail Dataset</li>
+                <li>XLSX format</li>
+                <li>4,338 unique customers</li>
+                <li>Period: Dec 2010 – Dec 2011</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-icon">🔧</div><h3>Methodology</h3></div>
+            <div class="card-content">
+              <ul class="bullet-list">
+                <li>RFM feature engineering</li>
+                <li>Log transformation</li>
+                <li>StandardScaler normalization</li>
+                <li>K-Means clustering</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-icon">🎯</div><h3>Goal</h3></div>
+            <div class="card-content">
+              <ul class="bullet-list">
+                <li>Group customers by behavior</li>
+                <li>Identify high-value segments</li>
+                <li>Detect at-risk customers</li>
+                <li>Recommend marketing actions</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 3 — RFM ANALYSIS ═══ -->
+    <div class="slide" id="slide-3">
+      <div class="slide-header reveal">
+        <div class="slide-icon">📐</div>
+        <h2>RFM Feature Engineering</h2>
+        <span class="slide-tag">Features</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-3" style="margin-bottom:24px;">
+          <div class="kpi-card reveal reveal-delay-1" style="border-top:3px solid #3b82f6;">
+            <span class="kpi-label">Recency</span>
+            <span class="kpi-value small">R</span>
+            <span class="kpi-sub">Days since last purchase</span>
+            <span class="kpi-sub" style="font-family:var(--font-mono);margin-top:4px;">Mean: 92.5 days</span>
+          </div>
+          <div class="kpi-card reveal reveal-delay-2" style="border-top:3px solid #8b5cf6;">
+            <span class="kpi-label">Frequency</span>
+            <span class="kpi-value small">F</span>
+            <span class="kpi-sub">Total number of purchases</span>
+            <span class="kpi-sub" style="font-family:var(--font-mono);margin-top:4px;">Mean: 4.27 orders</span>
+          </div>
+          <div class="kpi-card reveal reveal-delay-3" style="border-top:3px solid #06b6d4;">
+            <span class="kpi-label">Monetary</span>
+            <span class="kpi-value small">M</span>
+            <span class="kpi-sub">Total spend (£)</span>
+            <span class="kpi-sub" style="font-family:var(--font-mono);margin-top:4px;">Mean: £2,048.69</span>
+          </div>
+        </div>
+        <div class="content-grid grid-2">
+          <div class="card reveal reveal-delay-4">
+            <div class="card-header"><div class="card-icon">📊</div><h3>RFM Distributions</h3></div>
+            <div class="chart-container"><img src="charts/rfm_distributions.png" alt="RFM Distributions"></div>
+          </div>
+          <div class="card reveal reveal-delay-5">
+            <div class="card-header"><div class="card-icon">📋</div><h3>RFM Summary Statistics</h3></div>
+            <table class="data-table">
+              <thead><tr><th>Metric</th><th>Recency</th><th>Frequency</th><th>Monetary</th></tr></thead>
+              <tbody>
+                <tr><td class="highlight">Customers</td><td>4,338</td><td>4,338</td><td>4,338</td></tr>
+                <tr><td class="highlight">Mean</td><td>92.5 days</td><td>4.27</td><td>£2,048.69</td></tr>
+                <tr><td class="highlight">Median</td><td>51 days</td><td>2.0</td><td>£668.57</td></tr>
+                <tr><td class="highlight">Std Dev</td><td>100.0</td><td>7.7</td><td>£8,985.23</td></tr>
+                <tr><td class="highlight">Min</td><td>1 day</td><td>1</td><td>£3.75</td></tr>
+                <tr><td class="highlight">Max</td><td>374 days</td><td>209</td><td>£280,206</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 4 — FEATURE PREPARATION ═══ -->
+    <div class="slide" id="slide-4">
+      <div class="slide-header reveal">
+        <div class="slide-icon">⚙️</div>
+        <h2>Feature Preparation</h2>
+        <span class="slide-tag">Preprocessing</span>
+      </div>
+      <div class="slide-body" style="justify-content:center;align-items:center;">
+        <div class="summary-flow reveal reveal-delay-1" style="margin-bottom:40px;">
+          <div class="flow-step">📐 RFM Values</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">📈 Log Transform</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">⚖️ StandardScaler</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">🤖 K-Means Ready</div>
+        </div>
+        <div class="content-grid grid-2 reveal reveal-delay-2" style="max-width:1000px;">
+          <div class="card">
+            <div class="card-header"><div class="card-icon">📈</div><h3>Why Log Transform?</h3></div>
+            <div class="card-content">
+              RFM features are heavily right-skewed. A customer with £280,206 spend vs the median of £668 would dominate the clustering. Log transformation compresses extreme values while preserving relative order.
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-icon">⚖️</div><h3>Why StandardScaler?</h3></div>
+            <div class="card-content">
+              K-Means uses Euclidean distance. Without scaling, features with larger numeric ranges (Monetary: 3–280,206) would dominate over smaller ranges (Frequency: 1–209). Standardization gives each feature equal influence.
+            </div>
+          </div>
+        </div>
+        <div class="card reveal reveal-delay-3" style="max-width:800px;margin-top:24px;">
+          <div class="card-header"><div class="card-icon">📊</div><h3>Scaled Feature Statistics (Post-Transform)</h3></div>
+          <table class="data-table">
+            <thead><tr><th>Stat</th><th>Recency</th><th>Frequency</th><th>Monetary</th></tr></thead>
+            <tbody>
+              <tr><td class="highlight">Mean</td><td>0.000</td><td>−0.000</td><td>−0.000</td></tr>
+              <tr><td class="highlight">Std</td><td>1.000</td><td>1.000</td><td>1.000</td></tr>
+              <tr><td class="highlight">Min</td><td>−0.915</td><td>−0.955</td><td>−3.998</td></tr>
+              <tr><td class="highlight">Max</td><td>2.815</td><td>5.859</td><td>4.732</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 5 — ELBOW METHOD ═══ -->
+    <div class="slide" id="slide-5">
+      <div class="slide-header reveal">
+        <div class="slide-icon">📉</div>
+        <h2>Optimal K — Elbow Method</h2>
+        <span class="slide-tag">Model Selection</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-3-2">
+          <div class="card reveal reveal-delay-1">
+            <div class="card-header"><div class="card-icon">📊</div><h3>Elbow Curve</h3></div>
+            <div class="chart-container"><img src="charts/elbow_method.png" alt="Elbow Method"></div>
+          </div>
+          <div class="flex-col gap-16">
+            <div class="kpi-card reveal reveal-delay-2" style="border-top:3px solid var(--accent-primary);">
+              <span class="kpi-label">Selected K</span>
+              <span class="kpi-value large">4</span>
+              <span class="kpi-sub">Clusters (Elbow Point)</span>
+            </div>
+            <div class="card reveal reveal-delay-3">
+              <div class="card-header"><div class="card-icon">📋</div><h3>Inertia Values</h3></div>
+              <table class="data-table">
+                <thead><tr><th>K</th><th>Inertia</th></tr></thead>
+                <tbody>
+                  <tr><td class="highlight">K=2</td><td>6,874.93</td></tr>
+                  <tr><td class="highlight">K=3</td><td>4,299.07</td></tr>
+                  <tr><td class="accent">K=4 ✓</td><td class="accent">3,243.03</td></tr>
+                  <tr><td class="highlight">K=5</td><td>2,760.79</td></tr>
+                  <tr><td class="highlight">K=6</td><td>2,396.85</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 6 — CUSTOMER CLUSTERS ═══ -->
+    <div class="slide" id="slide-6">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🎨</div>
+        <h2>Customer Clusters</h2>
+        <span class="slide-tag">Results</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-4" style="margin-bottom:20px;">
+          <div class="kpi-card reveal reveal-delay-1" style="border-left:3px solid #FF6384;">
+            <span class="kpi-label">Cluster 0</span>
+            <span class="kpi-value small">1,377</span>
+            <span class="kpi-sub">31.7% of customers</span>
+          </div>
+          <div class="kpi-card reveal reveal-delay-2" style="border-left:3px solid #36A2EB;">
+            <span class="kpi-label">Cluster 1</span>
+            <span class="kpi-value small">938</span>
+            <span class="kpi-sub">21.6% of customers</span>
+          </div>
+          <div class="kpi-card reveal reveal-delay-3" style="border-left:3px solid #FFCE56;">
+            <span class="kpi-label">Cluster 2</span>
+            <span class="kpi-value small">571</span>
+            <span class="kpi-sub">13.2% of customers</span>
+          </div>
+          <div class="kpi-card reveal reveal-delay-4" style="border-left:3px solid #4BC0C0;">
+            <span class="kpi-label">Cluster 3</span>
+            <span class="kpi-value small">1,452</span>
+            <span class="kpi-sub">33.5% of customers</span>
+          </div>
+        </div>
+        <div class="content-grid grid-2">
+          <div class="card reveal reveal-delay-4">
+            <div class="card-header"><div class="card-icon">📊</div><h3>Cluster Scatter Plots</h3></div>
+            <div class="chart-container"><img src="charts/cluster_scatter_plots.png" alt="Cluster Scatter"></div>
+          </div>
+          <div class="card reveal reveal-delay-5">
+            <div class="card-header"><div class="card-icon">📊</div><h3>Customers Per Cluster</h3></div>
+            <div class="chart-container"><img src="charts/customers_per_cluster.png" alt="Customers per Cluster"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 7 — CUSTOMER PROFILES ═══ -->
+    <div class="slide" id="slide-7">
+      <div class="slide-header reveal">
+        <div class="slide-icon">👤</div>
+        <h2>Customer Segment Profiles</h2>
+        <span class="slide-tag">Profiling</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-3">
+          <div class="card reveal reveal-delay-1" style="border-top:3px solid #4BC0C0;">
+            <div class="card-header"><h3>🌟 New/Promising</h3></div>
+            <div class="card-content">
+              <p style="font-size:28px;font-weight:800;color:var(--text-primary);margin-bottom:8px;">2,829</p>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">65.2% of customer base</p>
+              <table class="data-table">
+                <tr><td class="highlight">Recency</td><td>~52 days</td></tr>
+                <tr><td class="highlight">Frequency</td><td>~2.6 orders</td></tr>
+                <tr><td class="highlight">Monetary</td><td>~£981</td></tr>
+              </table>
+              <p style="margin-top:12px;font-size:13px;color:var(--text-secondary);">
+                <strong>Action:</strong> Welcome series emails, first-purchase discounts, product range education. Monitor in first 90 days.
+              </p>
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-2" style="border-top:3px solid #FFCE56;">
+            <div class="card-header"><h3>🏆 Champions</h3></div>
+            <div class="card-content">
+              <p style="font-size:28px;font-weight:800;color:var(--text-primary);margin-bottom:8px;">571</p>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">13.2% of customer base</p>
+              <table class="data-table">
+                <tr><td class="highlight">Recency</td><td>19.8 days</td></tr>
+                <tr><td class="highlight">Frequency</td><td>15.8 orders</td></tr>
+                <tr><td class="highlight">Monetary</td><td>£9,823</td></tr>
+              </table>
+              <p style="margin-top:12px;font-size:13px;color:var(--text-secondary);">
+                <strong>Action:</strong> VIP loyalty, early access, referral bonuses. Do NOT over-discount — they buy at full price.
+              </p>
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-3" style="border-top:3px solid #FF6384;">
+            <div class="card-header"><h3>⚠️ Lost/Inactive</h3></div>
+            <div class="card-content">
+              <p style="font-size:28px;font-weight:800;color:var(--text-primary);margin-bottom:8px;">938</p>
+              <p style="font-size:12px;color:var(--text-muted);margin-bottom:12px;">21.6% of customer base</p>
+              <table class="data-table">
+                <tr><td class="highlight">Recency</td><td>259.4 days</td></tr>
+                <tr><td class="highlight">Frequency</td><td>1.4 orders</td></tr>
+                <tr><td class="highlight">Monetary</td><td>£385</td></tr>
+              </table>
+              <p style="margin-top:12px;font-size:13px;color:var(--text-secondary);">
+                <strong>Action:</strong> One reactivation campaign with compelling offer. If no response, reduce spend and reallocate budget.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 8 — KEY INSIGHTS ═══ -->
+    <div class="slide" id="slide-8">
+      <div class="slide-header reveal">
+        <div class="slide-icon">💡</div>
+        <h2>Key Strategic Insights</h2>
+        <span class="slide-tag">Insights</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2" style="grid-template-rows:1fr 1fr;">
+          <div class="rec-card reveal reveal-delay-1">
+            <div class="rec-number">High-Value Customers</div>
+            <div class="rec-insight">13.2% of customers drive disproportionate revenue</div>
+            <div class="rec-action">
+              571 Champions average £9,823 in total spend — nearly <strong>5× the overall mean</strong> of £2,048. These customers are the revenue backbone and should receive VIP treatment.
+            </div>
+          </div>
+          <div class="rec-card reveal reveal-delay-2">
+            <div class="rec-number">Retention Risk</div>
+            <div class="rec-insight">21.6% of customers are inactive (259+ days)</div>
+            <div class="rec-action">
+              938 customers haven't purchased in over 8 months. One targeted win-back campaign could recover significant revenue, but budget should be capped to avoid wasteful spending.
+            </div>
+          </div>
+          <div class="rec-card reveal reveal-delay-3">
+            <div class="rec-number">Growth Potential</div>
+            <div class="rec-insight">65.2% are new/promising — the largest segment</div>
+            <div class="rec-action">
+              2,829 customers show recent activity but low frequency (2.6 orders avg). Converting even 10% to repeat buyers would significantly increase revenue.
+            </div>
+          </div>
+          <div class="rec-card reveal reveal-delay-4">
+            <div class="rec-number">Spend Distribution</div>
+            <div class="rec-insight">Massive variance: £3.75 to £280,206 total spend</div>
+            <div class="rec-action">
+              The median spend of £668 vs mean of £2,048 reveals extreme right skew. One-size-fits-all marketing wastes budget. Segment-specific campaigns are essential.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 9 — FINAL SUMMARY ═══ -->
+    <div class="slide" id="slide-9">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🏁</div>
+        <h2>Project Summary</h2>
+        <span class="slide-tag">Conclusion</span>
+      </div>
+      <div class="slide-body" style="justify-content:center;align-items:center;">
+        <div class="summary-flow reveal reveal-delay-1" style="margin-bottom:40px;">
+          <div class="flow-step">📦 Customer Data</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">📐 RFM Metrics</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">⚖️ Standardize</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">🤖 K-Means (K=4)</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">👤 3 Segments</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">🎯 Targeted Strategy</div>
+        </div>
+        <div class="content-grid grid-4 reveal reveal-delay-2" style="max-width:1100px;">
+          <div class="kpi-card">
+            <span class="kpi-label">Customers</span>
+            <span class="kpi-value small">4,338</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Clusters</span>
+            <span class="kpi-value small">4</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Segments</span>
+            <span class="kpi-value small">3</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Champions</span>
+            <span class="kpi-value small">13.2%</span>
+          </div>
+        </div>
+        <div class="completion-badge reveal reveal-delay-3">
+          ✅ LEVEL 1 — TASK 2 COMPLETED
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="../shared-engine.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+/* Video 03 — Data Cleaning — Project-specific overrides */
+:root {
+  --accent-primary: #f59e0b;
+  --accent-secondary: #ef4444;
+  --accent-glow: rgba(245, 158, 11, 0.12);
+  --accent-gradient: linear-gradient(135deg, #f59e0b, #ef4444);
+}

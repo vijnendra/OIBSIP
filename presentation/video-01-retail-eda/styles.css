@@ -1,0 +1,7 @@
+/* Video 01 — Retail EDA — Project-specific overrides */
+:root {
+  --accent-primary: #3b82f6;
+  --accent-secondary: #8b5cf6;
+  --accent-glow: rgba(59, 130, 246, 0.12);
+  --accent-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+}

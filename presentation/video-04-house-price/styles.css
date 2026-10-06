@@ -1,0 +1,7 @@
+/* Video 04 — House Price Prediction — Project-specific overrides */
+:root {
+  --accent-primary: #8b5cf6;
+  --accent-secondary: #ec4899;
+  --accent-glow: rgba(139, 92, 246, 0.12);
+  --accent-gradient: linear-gradient(135deg, #8b5cf6, #ec4899);
+}

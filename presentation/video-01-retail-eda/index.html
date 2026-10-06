@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920,height=1080">
+  <meta name="description" content="EDA on Retail Sales Data — Oasis Infobyte Data Analytics Internship Level 1 Task 1">
+  <title>EDA on Retail Sales Data — Oasis Infobyte</title>
+  <link rel="stylesheet" href="../shared-styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="presentation">
+
+    <!-- ═══ SLIDE 1 — TITLE CARD ═══ -->
+    <div class="slide title-card active" id="slide-1">
+      <div class="org-badge reveal">
+        <span class="dot"></span>
+        OASIS INFOBYTE · DATA ANALYTICS INTERNSHIP
+      </div>
+      <h1 class="reveal reveal-delay-1">EDA on Retail<br>Sales Data</h1>
+      <p class="subtitle reveal reveal-delay-2">Uncovering purchasing patterns, customer demographics, and product
+        performance through exploratory data analysis</p>
+      <div class="meta-row reveal reveal-delay-3">
+        <div class="meta-item">
+          <span class="meta-label">Intern</span>
+          <span class="meta-value">Kopuri Vijnendra</span>
+        </div>
+        <span class="divider-dot"></span>
+        <div class="meta-item">
+          <span class="meta-label">Level</span>
+          <span class="meta-value">Level 1 — Task 1</span>
+        </div>
+        <span class="divider-dot"></span>
+        <div class="meta-item">
+          <span class="meta-label">Tools</span>
+          <span class="meta-value">Python · Pandas · Seaborn · Matplotlib</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 2 — PROJECT OVERVIEW ═══ -->
+    <div class="slide" id="slide-2">
+      <div class="slide-header reveal">
+        <div class="slide-icon">📊</div>
+        <h2>Project Overview</h2>
+        <span class="slide-tag">Objective</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-3">
+          <div class="card reveal reveal-delay-1">
+            <div class="card-header">
+              <div class="card-icon">🎯</div>
+              <h3>Business Objective</h3>
+            </div>
+            <div class="card-content">
+              Analyze retail transactional data to identify sales trends, customer demographic patterns, and
+              top-performing products to inform inventory, marketing, and engagement strategies.
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-2">
+            <div class="card-header">
+              <div class="card-icon">📁</div>
+              <h3>Dataset</h3>
+            </div>
+            <div class="card-content">
+              <ul class="bullet-list">
+                <li><strong>1,000</strong> transaction records</li>
+                <li><strong>9</strong> feature columns</li>
+                <li>Source: Kaggle (Public GitHub)</li>
+                <li>Format: CSV</li>
+                <li>Period: Jan–Dec 2023</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-3">
+            <div class="card-header">
+              <div class="card-icon">🔧</div>
+              <h3>Tools & Methods</h3>
+            </div>
+            <div class="card-content">
+              <ul class="bullet-list">
+                <li>Python (pandas, numpy)</li>
+                <li>Visualization (matplotlib, seaborn)</li>
+                <li>Time-series decomposition</li>
+                <li>Correlation analysis</li>
+                <li>Demographic segmentation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="content-grid grid-4 reveal reveal-delay-4">
+          <div class="kpi-card">
+            <span class="kpi-label">Total Revenue</span>
+            <span class="kpi-value small">$456K</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Transactions</span>
+            <span class="kpi-value small">1,000</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Avg Transaction</span>
+            <span class="kpi-value small">$456</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Unique Customers</span>
+            <span class="kpi-value small">1,000</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 3 — DATASET & INITIAL ANALYSIS ═══ -->
+    <div class="slide" id="slide-3">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🔍</div>
+        <h2>Dataset Structure & Quality</h2>
+        <span class="slide-tag">Data Audit</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2">
+          <div class="card reveal reveal-delay-1">
+            <div class="card-header">
+              <div class="card-icon">📋</div>
+              <h3>Column Structure</h3>
+            </div>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th>Type</th>
+                  <th>Nulls</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="highlight">Transaction ID</td>
+                  <td>int64</td>
+                  <td class="text-success">0</td>
+                </tr>
+                <tr>
+                  <td class="highlight">Date</td>
+                  <td>object → datetime</td>
+                  <td class="text-success">0</td>
+                </tr>
+                <tr>
+                  <td class="highlight">Customer ID</td>
+                  <td>object</td>
+                  <td class="text-success">0</td>
+                </tr>
+                <tr>
+                  <td class="highlight">Gender</td>
+                  <td>object</td>
+                  <td class="text-success">0</td>
+                </tr>
+                <tr>
+                  <td class="highlight">Age</td>
+                  <td>int64</td>
+                  <td class="text-success">0</td>
+                </tr>
+                <tr>
+                  <td class="highlight">Product Category</td>
+                  <td>object</td>
+                  <td class="text-success">0</td>
+                </tr>
+                <tr>
+                  <td class="highlight">Quantity</td>
+                  <td>int64</td>
+                  <td class="text-success">0</td>
+                </tr>
+                <tr>
+                  <td class="highlight">Price per Unit</td>
+                  <td>int64</td>
+                  <td class="text-success">0</td>
+                </tr>
+                <tr>
+                  <td class="highlight">Total Amount</td>
+                  <td>int64</td>
+                  <td class="text-success">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="flex-col gap-16">
+            <div class="card reveal reveal-delay-2">
+              <div class="card-header">
+                <div class="card-icon">📈</div>
+                <h3>Descriptive Statistics</h3>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Metric</th>
+                    <th>Age</th>
+                    <th>Quantity</th>
+                    <th>Price/Unit</th>
+                    <th>Total Amt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="highlight">Mean</td>
+                    <td>41.4</td>
+                    <td>2.5</td>
+                    <td>$179.9</td>
+                    <td>$456.0</td>
+                  </tr>
+                  <tr>
+                    <td class="highlight">Std Dev</td>
+                    <td>13.7</td>
+                    <td>1.1</td>
+                    <td>$189.7</td>
+                    <td>$560.0</td>
+                  </tr>
+                  <tr>
+                    <td class="highlight">Min</td>
+                    <td>18</td>
+                    <td>1</td>
+                    <td>$25</td>
+                    <td>$25</td>
+                  </tr>
+                  <tr>
+                    <td class="highlight">Median</td>
+                    <td>42</td>
+                    <td>3</td>
+                    <td>$50</td>
+                    <td>$135</td>
+                  </tr>
+                  <tr>
+                    <td class="highlight">Max</td>
+                    <td>64</td>
+                    <td>4</td>
+                    <td>$500</td>
+                    <td>$2,000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card reveal reveal-delay-3">
+              <div class="card-header">
+                <div class="card-icon">✅</div>
+                <h3>Data Quality</h3>
+              </div>
+              <div class="card-content">
+                <div style="display:flex;gap:16px;">
+                  <span class="tag success">0 Null Values</span>
+                  <span class="tag success">0 Duplicates</span>
+                  <span class="tag success">Clean Dataset</span>
+                </div>
+                <p style="margin-top:12px;">Dataset arrived pre-cleaned with no missing values or duplicates. All 1,000
+                  rows used for analysis.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 4 — SALES TRENDS ═══ -->
+    <div class="slide" id="slide-4">
+      <div class="slide-header reveal">
+        <div class="slide-icon">📈</div>
+        <h2>Sales Trends Over Time</h2>
+        <span class="slide-tag">Temporal Analysis</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2">
+          <div class="card reveal reveal-delay-1">
+            <div class="card-header">
+              <div class="card-icon">📅</div>
+              <h3>Monthly Sales Revenue</h3>
+            </div>
+            <div class="chart-container">
+              <img src="charts/monthly_sales_trend.png" alt="Monthly Sales Trend">
+            </div>
+          </div>
+          <div class="flex-col gap-16">
+            <div class="card reveal reveal-delay-2">
+              <div class="card-header">
+                <div class="card-icon">📊</div>
+                <h3>Quarterly Performance</h3>
+              </div>
+              <div class="chart-container" style="max-height:200px">
+                <img src="charts/quarterly_sales_trend.png" alt="Quarterly Sales Trend">
+              </div>
+            </div>
+            <div class="card reveal reveal-delay-3">
+              <div class="card-header">
+                <div class="card-icon">💡</div>
+                <h3>Key Trend Insights</h3>
+              </div>
+              <div class="card-content">
+                <ul class="bullet-list">
+                  <li><strong>Peak month: May</strong> — $53,150 revenue (highest)</li>
+                  <li><strong>Low month: September</strong> — $23,620 (lowest)</li>
+                  <li><strong>Q4 strongest:</strong> $126,190 in revenue</li>
+                  <li><strong>Q3 weakest:</strong> $96,045 in revenue</li>
+                  <li>Strong December rebound at $44,690</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 5 — CUSTOMER ANALYSIS ═══ -->
+    <div class="slide" id="slide-5">
+      <div class="slide-header reveal">
+        <div class="slide-icon">👥</div>
+        <h2>Customer Demographics</h2>
+        <span class="slide-tag">Demographics</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2">
+          <div class="card reveal reveal-delay-1">
+            <div class="card-header">
+              <div class="card-icon">📊</div>
+              <h3>Demographics & Spending</h3>
+            </div>
+            <div class="chart-container">
+              <img src="charts/customer_demographics.png" alt="Customer Demographics">
+            </div>
+          </div>
+          <div class="flex-col gap-16">
+            <div class="card reveal reveal-delay-2">
+              <div class="card-header">
+                <div class="card-icon">⚧</div>
+                <h3>Gender Revenue Split</h3>
+              </div>
+              <div class="card-content">
+                <div class="stat-bar">
+                  <span class="bar-label">Female (510)</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:51%" data-width="51%"></div>
+                  </div>
+                  <span class="bar-value">$232,840</span>
+                </div>
+                <div class="stat-bar">
+                  <span class="bar-label">Male (490)</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:49%;background:linear-gradient(135deg,#8b5cf6,#06b6d4)"
+                      data-width="49%"></div>
+                  </div>
+                  <span class="bar-value">$223,160</span>
+                </div>
+              </div>
+            </div>
+            <div class="card reveal reveal-delay-3">
+              <div class="card-header">
+                <div class="card-icon">🎂</div>
+                <h3>Revenue by Age Group</h3>
+              </div>
+              <div class="card-content">
+                <div class="stat-bar"><span class="bar-label">18–25</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:84%" data-width="84%"></div>
+                  </div><span class="bar-value">$84,550</span>
+                </div>
+                <div class="stat-bar"><span class="bar-label">26–35</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:98%" data-width="98%"></div>
+                  </div><span class="bar-value">$98,480</span>
+                </div>
+                <div class="stat-bar"><span class="bar-label">36–45</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:92%" data-width="92%"></div>
+                  </div><span class="bar-value">$91,870</span>
+                </div>
+                <div class="stat-bar"><span class="bar-label">46–55</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:100%" data-width="100%"></div>
+                  </div><span class="bar-value">$100,690</span>
+                </div>
+                <div class="stat-bar"><span class="bar-label">56–65</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:80%" data-width="80%"></div>
+                  </div><span class="bar-value">$80,410</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 6 — PRODUCT & CATEGORY ═══ -->
+    <div class="slide" id="slide-6">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🏷️</div>
+        <h2>Product & Category Performance</h2>
+        <span class="slide-tag">Products</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2">
+          <div class="card reveal reveal-delay-1">
+            <div class="card-header">
+              <div class="card-icon">📊</div>
+              <h3>Category Analysis</h3>
+            </div>
+            <div class="chart-container">
+              <img src="charts/product_analysis.png" alt="Product Analysis">
+            </div>
+          </div>
+          <div class="flex-col gap-16">
+            <div class="card reveal reveal-delay-2">
+              <div class="card-header">
+                <div class="card-icon">💰</div>
+                <h3>Revenue by Category</h3>
+              </div>
+              <div class="card-content">
+                <div class="stat-bar">
+                  <span class="bar-label">Electronics</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:100%" data-width="100%"></div>
+                  </div>
+                  <span class="bar-value">$156,905</span>
+                </div>
+                <div class="stat-bar">
+                  <span class="bar-label">Clothing</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:99%" data-width="99%"></div>
+                  </div>
+                  <span class="bar-value">$155,580</span>
+                </div>
+                <div class="stat-bar">
+                  <span class="bar-label">Beauty</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:91%" data-width="91%"></div>
+                  </div>
+                  <span class="bar-value">$143,515</span>
+                </div>
+              </div>
+              <p style="margin-top:14px;font-size:13px;color:var(--text-secondary);">
+                Three categories present. <strong>Electronics leads</strong> with $156,905 (34.4%), followed closely by
+                Clothing (34.1%) and Beauty (31.5%).
+              </p>
+            </div>
+            <div class="card reveal reveal-delay-3">
+              <div class="card-header">
+                <div class="card-icon">🔢</div>
+                <h3>Transaction Volume</h3>
+              </div>
+              <div class="card-content">
+                <div class="stat-bar">
+                  <span class="bar-label">Clothing</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:100%" data-width="100%"></div>
+                  </div>
+                  <span class="bar-value">351 txn</span>
+                </div>
+                <div class="stat-bar">
+                  <span class="bar-label">Electronics</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:97%" data-width="97%"></div>
+                  </div>
+                  <span class="bar-value">342 txn</span>
+                </div>
+                <div class="stat-bar">
+                  <span class="bar-label">Beauty</span>
+                  <div class="bar-track">
+                    <div class="bar-fill" style="width:87%" data-width="87%"></div>
+                  </div>
+                  <span class="bar-value">307 txn</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 7 — CORRELATIONS ═══ -->
+    <div class="slide" id="slide-7">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🔗</div>
+        <h2>Correlation & Additional Insights</h2>
+        <span class="slide-tag">Correlation</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2">
+          <div class="card reveal reveal-delay-1">
+            <div class="card-header">
+              <div class="card-icon">🗺️</div>
+              <h3>Correlation Heatmap</h3>
+            </div>
+            <div class="chart-container">
+              <img src="charts/correlation_heatmap.png" alt="Correlation Heatmap">
+            </div>
+          </div>
+          <div class="flex-col gap-16">
+            <div class="card reveal reveal-delay-2">
+              <div class="card-header">
+                <div class="card-icon">🔍</div>
+                <h3>Key Correlations</h3>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Pair</th>
+                    <th>r</th>
+                    <th>Interpretation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="highlight">Price per Unit ↔ Total</td>
+                    <td class="accent">0.852</td>
+                    <td>Strong positive — price is primary revenue driver</td>
+                  </tr>
+                  <tr>
+                    <td class="highlight">Quantity ↔ Total</td>
+                    <td class="accent">0.374</td>
+                    <td>Moderate positive — more items, more spend</td>
+                  </tr>
+                  <tr>
+                    <td class="highlight">Age ↔ Total</td>
+                    <td>−0.061</td>
+                    <td>Negligible — age does not predict spending</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card reveal reveal-delay-3">
+              <div class="card-header">
+                <div class="card-icon">📊</div>
+                <h3>Average Spend by Age & Gender</h3>
+              </div>
+              <div class="chart-container" style="max-height:220px">
+                <img src="charts/avg_spend_by_age_gender.png" alt="Avg Spend by Age & Gender">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 8 — RECOMMENDATIONS ═══ -->
+    <div class="slide" id="slide-8">
+      <div class="slide-header reveal">
+        <div class="slide-icon">💡</div>
+        <h2>Business Recommendations</h2>
+        <span class="slide-tag">Strategy</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2" style="grid-template-rows:1fr 1fr;">
+          <div class="rec-card reveal reveal-delay-1">
+            <div class="rec-number">Recommendation 01</div>
+            <div class="rec-insight">Boost Q3 with targeted promotions</div>
+            <div class="rec-action">
+              <strong>Insight:</strong> Q3 generated only $96,045 (lowest), with September at just $23,620.<br>
+              <strong>Impact:</strong> Seasonal slump creates a revenue gap of ~$30K vs strongest quarter.<br>
+              <strong>Action:</strong> Launch mid-summer sales events and back-to-school campaigns to lift Q3 revenue.
+            </div>
+          </div>
+          <div class="rec-card reveal reveal-delay-2">
+            <div class="rec-number">Recommendation 02</div>
+            <div class="rec-insight">Maximize the Electronics advantage</div>
+            <div class="rec-action">
+              <strong>Insight:</strong> Electronics leads revenue at $156,905 despite fewer transactions than
+              Clothing.<br>
+              <strong>Impact:</strong> Higher unit prices ($25–$500 range) drive disproportionate revenue per
+              transaction.<br>
+              <strong>Action:</strong> Expand electronics inventory, bundle products, and promote higher-margin
+              electronics during peak months.
+            </div>
+          </div>
+          <div class="rec-card reveal reveal-delay-3">
+            <div class="rec-number">Recommendation 03</div>
+            <div class="rec-insight">Loyalty programs for the 46–55 age group</div>
+            <div class="rec-action">
+              <strong>Insight:</strong> The 46–55 age group generates the highest revenue at $100,690.<br>
+              <strong>Impact:</strong> This segment outspends younger demographics by up to 25%.<br>
+              <strong>Action:</strong> Implement exclusive loyalty rewards and personalized offers targeting this
+              high-value segment.
+            </div>
+          </div>
+          <div class="rec-card reveal reveal-delay-4">
+            <div class="rec-number">Recommendation 04</div>
+            <div class="rec-insight">Gender-balanced marketing strategy</div>
+            <div class="rec-action">
+              <strong>Insight:</strong> Female customers contribute $232,840 (51%) vs Male $223,160 (49%).<br>
+              <strong>Impact:</strong> Near-equal gender split suggests broad market appeal.<br>
+              <strong>Action:</strong> Maintain gender-neutral core campaigns while creating segment-specific cross-sell
+              opportunities in Beauty (Female) and Electronics (Male).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 9 — FINAL SUMMARY ═══ -->
+    <div class="slide" id="slide-9">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🏁</div>
+        <h2>Project Summary</h2>
+        <span class="slide-tag">Conclusion</span>
+      </div>
+      <div class="slide-body" style="justify-content:center;align-items:center;">
+        <div class="summary-flow reveal reveal-delay-1">
+          <div class="flow-step">📁 1,000 Transactions</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">🔍 Data Audit</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">📈 Trend Analysis</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">👥 Demographics</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">🏷️ Category Insights</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">💡 4 Recommendations</div>
+        </div>
+        <div class="content-grid grid-3 reveal reveal-delay-2" style="max-width:1000px;margin:0 auto;">
+          <div class="card text-center">
+            <div class="card-header" style="justify-content:center">
+              <h3>What Was Analyzed</h3>
+            </div>
+            <div class="card-content">
+              1,000 retail transactions across 3 product categories, 12 months, and diverse customer demographics.
+            </div>
+          </div>
+          <div class="card text-center">
+            <div class="card-header" style="justify-content:center">
+              <h3>What Was Discovered</h3>
+            </div>
+            <div class="card-content">
+              Strong seasonal patterns (Q4 peak, Q3 dip), Electronics revenue dominance, and a high-value 46–55 age
+              segment.
+            </div>
+          </div>
+          <div class="card text-center">
+            <div class="card-header" style="justify-content:center">
+              <h3>Business Decisions</h3>
+            </div>
+            <div class="card-content">
+              Targeted seasonal promotions, electronics inventory expansion, and demographic-focused loyalty programs.
+            </div>
+          </div>
+        </div>
+        <div class="completion-badge reveal reveal-delay-3">
+          ✅ LEVEL 1 — TASK 1 COMPLETED
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../shared-engine.js"></script>
+</body>
+
+</html>

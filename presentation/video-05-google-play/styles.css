@@ -1,0 +1,7 @@
+/* Video 05 — Google Play Store — Project-specific overrides */
+:root {
+  --accent-primary: #facc15;
+  --accent-secondary: #f97316;
+  --accent-glow: rgba(250, 204, 21, 0.12);
+  --accent-gradient: linear-gradient(135deg, #facc15, #f97316);
+}

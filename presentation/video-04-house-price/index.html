@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920,height=1080">
+  <meta name="description" content="House Price Prediction — Oasis Infobyte Data Analytics Internship Level 2 Task 1">
+  <title>House Price Prediction — Oasis Infobyte</title>
+  <link rel="stylesheet" href="../shared-styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="presentation">
+
+    <!-- ═══ SLIDE 1 — TITLE CARD ═══ -->
+    <div class="slide title-card active" id="slide-1">
+      <div class="org-badge reveal">
+        <span class="dot"></span>
+        OASIS INFOBYTE · DATA ANALYTICS INTERNSHIP
+      </div>
+      <h1 class="reveal reveal-delay-1">House Price<br>Prediction</h1>
+      <p class="subtitle reveal reveal-delay-2">Predicting median house values using Linear Regression on geographic and demographic features</p>
+      <div class="meta-row reveal reveal-delay-3">
+        <div class="meta-item">
+          <span class="meta-label">Intern</span>
+          <span class="meta-value">Vinny</span>
+        </div>
+        <span class="divider-dot"></span>
+        <div class="meta-item">
+          <span class="meta-label">Level</span>
+          <span class="meta-value">Level 2 — Task 1</span>
+        </div>
+        <span class="divider-dot"></span>
+        <div class="meta-item">
+          <span class="meta-label">Tools</span>
+          <span class="meta-value">Python · Scikit-learn · Linear Regression</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 2 — BUSINESS PROBLEM ═══ -->
+    <div class="slide" id="slide-2">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🎯</div>
+        <h2>The Prediction Objective</h2>
+        <span class="slide-tag">Problem</span>
+      </div>
+      <div class="slide-body" style="justify-content:center;align-items:center;">
+        <div class="summary-flow reveal reveal-delay-1" style="margin-bottom:40px;">
+          <div class="flow-step">🏠 Property Features</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">🤖 Linear Model</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">💰 Predicted Price</div>
+        </div>
+        <div class="content-grid grid-2 reveal reveal-delay-2" style="max-width:1000px;">
+          <div class="card">
+            <div class="card-header"><div class="card-icon">❓</div><h3>The Problem</h3></div>
+            <div class="card-content">
+              Real estate pricing is driven by complex combinations of location, size, and neighborhood wealth. The goal is to build an algorithm capable of estimating property values based on these attributes.
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-icon">🎯</div><h3>The Objective</h3></div>
+            <div class="card-content">
+              Train a multivariate Linear Regression model on the California Housing dataset to predict the <code>median_house_value</code> for a given district block.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 3 — DATA & FEATURES ═══ -->
+    <div class="slide" id="slide-3">
+      <div class="slide-header reveal">
+        <div class="slide-icon">📊</div>
+        <h2>Data & Feature Analysis</h2>
+        <span class="slide-tag">EDA</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-3">
+          <div class="kpi-card reveal reveal-delay-1" style="border-top:3px solid var(--accent-primary);">
+            <span class="kpi-label">Dataset Size</span>
+            <span class="kpi-value">20,640</span>
+            <span class="kpi-sub">Total Records</span>
+          </div>
+          <div class="kpi-card reveal reveal-delay-2" style="border-top:3px solid var(--accent-secondary);">
+            <span class="kpi-label">Avg House Value</span>
+            <span class="kpi-value">$206K</span>
+            <span class="kpi-sub">Mean Target Variable</span>
+          </div>
+          <div class="kpi-card reveal reveal-delay-3" style="border-top:3px solid var(--color-warning);">
+            <span class="kpi-label">Missing Values</span>
+            <span class="kpi-value">207</span>
+            <span class="kpi-sub">Nulls in total_bedrooms</span>
+          </div>
+        </div>
+        <div class="content-grid grid-2" style="margin-top: 16px;">
+          <div class="card reveal reveal-delay-4">
+            <div class="card-header"><div class="card-icon">📉</div><h3>Target Distribution</h3></div>
+            <div class="chart-container" style="max-height: 220px;">
+              <img src="charts/target_distribution.png" alt="Target Distribution">
+            </div>
+          </div>
+           <div class="card reveal reveal-delay-5">
+            <div class="card-header"><div class="card-icon">🔍</div><h3>Key Findings</h3></div>
+            <div class="card-content">
+               <ul class="bullet-list">
+                <li><strong>Artificial Cap:</strong> Prices are artificially capped at $500,001, causing a massive spike in the distribution.</li>
+                <li><strong>Skew:</strong> Most features (rooms, bedrooms) are heavily right-skewed.</li>
+                <li><strong>Missing Data:</strong> 207 rows missing <code>total_bedrooms</code>.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 4 — DATA PREPROCESSING ═══ -->
+    <div class="slide" id="slide-4">
+      <div class="slide-header reveal">
+        <div class="slide-icon">⚙️</div>
+        <h2>Data Preprocessing</h2>
+        <span class="slide-tag">Preparation</span>
+      </div>
+      <div class="slide-body" style="justify-content:center;align-items:center;">
+        <div class="summary-flow reveal reveal-delay-1" style="margin-bottom:32px;">
+          <div class="flow-step">Raw Data</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Cleaning (Impute)</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">One-Hot Encoding</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Train/Test Split</div>
+        </div>
+        <div class="content-grid grid-2 reveal reveal-delay-2" style="max-width: 1000px;">
+          <div class="card">
+            <div class="card-header"><div class="card-icon">🩹</div><h3>Handling Missing Values</h3></div>
+            <div class="card-content">
+              Imputed the 207 missing values in <code>total_bedrooms</code> with the median value to preserve records without heavily skewing the feature distribution.
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-icon">🔢</div><h3>One-Hot Encoding</h3></div>
+            <div class="card-content">
+              <strong>Why?</strong> Linear Regression cannot process categorical strings like <code>ocean_proximity</code> ("NEAR OCEAN", "INLAND").<br>
+              <strong>Method:</strong> Converted to binary columns (1 or 0) for each category.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 5 — LINEAR REGRESSION ═══ -->
+    <div class="slide" id="slide-5">
+      <div class="slide-header reveal">
+        <div class="slide-icon">📐</div>
+        <h2>Linear Regression Model</h2>
+        <span class="slide-tag">Modeling</span>
+      </div>
+      <div class="slide-body" style="justify-content:center;align-items:center;">
+        <h1 style="font-size: 40px; font-weight: 800; text-align: center; margin-bottom: 24px; font-family: var(--font-mono);" class="reveal reveal-delay-1">
+          y = β₀ + β₁x₁ + β₂x₂ + ... + βₙxₙ + ε
+        </h1>
+        <div class="content-grid grid-3 reveal reveal-delay-2" style="max-width: 1100px;">
+          <div class="card text-center">
+            <div class="card-header" style="justify-content:center"><div class="card-icon">📊</div><h3>Features (x)</h3></div>
+            <div class="card-content">
+              15 independent variables (Income, Rooms, Location indicators, etc.)
+            </div>
+          </div>
+          <div class="card text-center">
+            <div class="card-header" style="justify-content:center"><div class="card-icon">🧠</div><h3>Model Fit (β)</h3></div>
+            <div class="card-content">
+              Learning the optimal weights (coefficients) to minimize the Mean Squared Error on 80% training data.
+            </div>
+          </div>
+          <div class="card text-center">
+            <div class="card-header" style="justify-content:center"><div class="card-icon">🎯</div><h3>Prediction (y)</h3></div>
+            <div class="card-content">
+              Predicting continuous median house values on 20% unseen test data.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 6 — MODEL PERFORMANCE ═══ -->
+    <div class="slide" id="slide-6">
+      <div class="slide-header reveal">
+        <div class="slide-icon">📈</div>
+        <h2>Model Performance Metrics</h2>
+        <span class="slide-tag">Evaluation</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-3" style="margin-bottom: 24px;">
+          <div class="kpi-card reveal reveal-delay-1" style="border-top:3px solid var(--text-muted);">
+            <span class="kpi-label">R-Squared (R²)</span>
+            <span class="kpi-value large">0.597</span>
+            <span class="kpi-sub">Explains ~60% of variance</span>
+          </div>
+          <div class="kpi-card reveal reveal-delay-2" style="border-top:3px solid var(--color-warning);">
+            <span class="kpi-label">RMSE</span>
+            <span class="kpi-value large">$72,668</span>
+            <span class="kpi-sub">Average prediction error</span>
+          </div>
+          <div class="kpi-card reveal reveal-delay-3" style="border-top:3px solid var(--color-danger);">
+            <span class="kpi-label">MSE</span>
+            <span class="kpi-value">5.28B</span>
+            <span class="kpi-sub">Mean Squared Error</span>
+          </div>
+        </div>
+        <div class="card reveal reveal-delay-4">
+          <div class="card-header"><div class="card-icon">ℹ️</div><h3>Performance Context</h3></div>
+          <div class="card-content">
+            An R² of 0.597 indicates a moderate fit. The model captures the general trend but struggles with the artificial $500K cap and complex non-linear geographic interactions. The RMSE means predictions are typically off by ~$72K.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 7 — ACTUAL VS PREDICTED ═══ -->
+    <div class="slide" id="slide-7">
+      <div class="slide-header reveal">
+        <div class="slide-icon">⚖️</div>
+        <h2>Actual vs Predicted Values</h2>
+        <span class="slide-tag">Visualization</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2-1">
+          <div class="card reveal reveal-delay-1">
+            <div class="chart-container">
+              <img src="charts/actual_vs_predicted.png" alt="Actual vs Predicted">
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-2">
+            <div class="card-header"><div class="card-icon">👁️</div><h3>Interpretation</h3></div>
+            <div class="card-content">
+              <ul class="bullet-list">
+                <li><strong>Ideal Scenario:</strong> Points should form a tight diagonal line.</li>
+                <li><strong>Current Model:</strong> A visible positive correlation exists, matching the R² score.</li>
+                <li><strong>The $500K Cap Issue:</strong> The horizontal line of points at the far right represents the artificial cap in the dataset, where the model significantly underestimates the true (uncapped) value of luxury homes.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 8 — RESIDUAL ANALYSIS ═══ -->
+    <div class="slide" id="slide-8">
+      <div class="slide-header reveal">
+        <div class="slide-icon">📉</div>
+        <h2>Residual Analysis</h2>
+        <span class="slide-tag">Diagnostics</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2-1">
+          <div class="card reveal reveal-delay-1">
+            <div class="chart-container">
+              <img src="charts/residuals_plot.png" alt="Residuals Plot">
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-2">
+            <div class="card-header"><div class="card-icon">🔍</div><h3>Error Distribution</h3></div>
+            <div class="card-content">
+              <ul class="bullet-list">
+                <li><strong>Heteroscedasticity:</strong> The errors fan out slightly at higher predicted values, meaning the model is less accurate for expensive homes.</li>
+                <li><strong>Pattern:</strong> The visible diagonal boundary in the residuals confirms the model's inability to handle the hard $500K price ceiling, violating the linear assumption of random, normally distributed errors.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 9 — MODEL INTERPRETATION ═══ -->
+    <div class="slide" id="slide-9">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🧠</div>
+        <h2>Model Interpretation</h2>
+        <span class="slide-tag">Feature Importance</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2">
+           <div class="card reveal reveal-delay-1" style="border-top:3px solid var(--color-success);">
+            <div class="card-header"><div class="card-icon">📈</div><h3>Top Positive Predictors</h3></div>
+            <table class="data-table">
+              <thead><tr><th>Feature</th><th>Coefficient</th></tr></thead>
+              <tbody>
+                <tr><td class="highlight">bedrooms_per_room</td><td class="text-success fw-700">+289,843</td></tr>
+                <tr><td class="highlight">ocean_proximity_ISLAND</td><td class="text-success fw-700">+130,726</td></tr>
+                <tr><td class="highlight">median_income</td><td class="text-success fw-700">+41,436</td></tr>
+              </tbody>
+            </table>
+            <p style="margin-top:12px;font-size:12px;color:var(--text-secondary);">Island locations and higher neighborhood median income strongly drive up property values.</p>
+          </div>
+          <div class="card reveal reveal-delay-2" style="border-top:3px solid var(--color-danger);">
+            <div class="card-header"><div class="card-icon">📉</div><h3>Top Negative Predictors</h3></div>
+            <table class="data-table">
+              <thead><tr><th>Feature</th><th>Coefficient</th></tr></thead>
+              <tbody>
+                <tr><td class="highlight">ocean_proximity_INLAND</td><td class="text-danger fw-700">-34,951</td></tr>
+                <tr><td class="highlight">longitude</td><td class="text-danger fw-700">-28,059</td></tr>
+                <tr><td class="highlight">latitude</td><td class="text-danger fw-700">-26,508</td></tr>
+              </tbody>
+            </table>
+            <p style="margin-top:12px;font-size:12px;color:var(--text-secondary);">Being inland significantly depresses property value compared to coastal locations.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 10 — FINAL SUMMARY ═══ -->
+    <div class="slide" id="slide-10">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🏁</div>
+        <h2>Project Summary</h2>
+        <span class="slide-tag">Conclusion</span>
+      </div>
+      <div class="slide-body" style="justify-content:center;align-items:center;">
+        <div class="summary-flow reveal reveal-delay-1" style="margin-bottom:40px;">
+          <div class="flow-step">EDA</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Preprocessing</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Regression</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Evaluation</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Interpretation</div>
+        </div>
+        <div class="content-grid grid-3 reveal reveal-delay-2" style="max-width: 900px; margin: 0 auto; margin-bottom: 40px;">
+          <div class="card text-center"><div class="card-header" style="justify-content:center"><h3>Model Power</h3></div><div class="card-content">R² of 0.597 shows moderate predictive ability.</div></div>
+          <div class="card text-center"><div class="card-header" style="justify-content:center"><h3>Key Drivers</h3></div><div class="card-content">Median Income and Coastal proximity dictate price.</div></div>
+          <div class="card text-center"><div class="card-header" style="justify-content:center"><h3>Limitations</h3></div><div class="card-content">Artificial $500K cap degrades linear performance.</div></div>
+        </div>
+        <div class="completion-badge reveal reveal-delay-3">
+          ✅ LEVEL 2 — TASK 1 COMPLETED
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="../shared-engine.js"></script>
+</body>
+</html>

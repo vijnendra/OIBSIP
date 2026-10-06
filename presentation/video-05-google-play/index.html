@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920,height=1080">
+  <meta name="description" content="Google Play Store Analysis — Oasis Infobyte Data Analytics Internship Level 2 Task 4">
+  <title>Google Play Store Analysis — Oasis Infobyte</title>
+  <link rel="stylesheet" href="../shared-styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="presentation">
+
+    <!-- ═══ SLIDE 1 — TITLE CARD ═══ -->
+    <div class="slide title-card active" id="slide-1">
+      <div class="org-badge reveal">
+        <span class="dot"></span>
+        OASIS INFOBYTE · DATA ANALYTICS INTERNSHIP
+      </div>
+      <h1 class="reveal reveal-delay-1">Unveiling the Android<br>App Market</h1>
+      <p class="subtitle reveal reveal-delay-2">A comprehensive analysis of Google Play Store categories, ratings, pricing, and user sentiment</p>
+      <div class="meta-row reveal reveal-delay-3">
+        <div class="meta-item">
+          <span class="meta-label">Intern</span>
+          <span class="meta-value">Vinny</span>
+        </div>
+        <span class="divider-dot"></span>
+        <div class="meta-item">
+          <span class="meta-label">Level</span>
+          <span class="meta-value">Level 2 — Task 4</span>
+        </div>
+        <span class="divider-dot"></span>
+        <div class="meta-item">
+          <span class="meta-label">Tools</span>
+          <span class="meta-value">Python · Pandas · Seaborn · Plotly · TextBlob (NLP)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 2 — PROJECT OVERVIEW ═══ -->
+    <div class="slide" id="slide-2">
+      <div class="slide-header reveal">
+        <div class="slide-icon">📊</div>
+        <h2>Project Overview</h2>
+        <span class="slide-tag">Datasets</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2" style="margin-bottom: 24px;">
+          <div class="kpi-card reveal reveal-delay-1" style="border-top:3px solid var(--accent-primary);">
+            <span class="kpi-label">Apps Dataset</span>
+            <span class="kpi-value large">10,841</span>
+            <span class="kpi-sub">Total records (13 features)</span>
+          </div>
+          <div class="kpi-card reveal reveal-delay-2" style="border-top:3px solid var(--accent-secondary);">
+            <span class="kpi-label">Reviews Dataset</span>
+            <span class="kpi-value large">64,295</span>
+            <span class="kpi-sub">Total records (5 features)</span>
+          </div>
+        </div>
+        <div class="content-grid grid-2 reveal reveal-delay-3" style="max-width: 1000px; margin: 0 auto;">
+          <div class="card">
+            <div class="card-header"><div class="card-icon">🎯</div><h3>Project Objective</h3></div>
+            <div class="card-content">
+              Explore the Google Play Store ecosystem to uncover insights on app categories, ratings, pricing trends, and user review sentiments to guide developer strategies.
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-icon">🔧</div><h3>Key Tools Used</h3></div>
+            <div class="card-content">
+              <ul class="bullet-list">
+                <li>Pandas for data wrangling and string manipulation</li>
+                <li>Seaborn/Matplotlib for static visuals</li>
+                <li>Plotly for interactive visualizations</li>
+                <li>TextBlob for NLP sentiment analysis</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 3 — DATA CLEANING ═══ -->
+    <div class="slide" id="slide-3">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🧹</div>
+        <h2>Data Cleaning Challenges</h2>
+        <span class="slide-tag">Preprocessing</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-3">
+          <div class="card reveal reveal-delay-1">
+            <div class="card-header"><div class="card-icon">🔢</div><h3>Installs Formatting</h3></div>
+            <div class="card-content">
+              <strong>Before:</strong> <code>'10,000+'</code> (String)<br>
+              <strong>Process:</strong> Removed commas and plus signs, cast to float.<br>
+              <strong>After:</strong> <code>10000.0</code> (Numeric)
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-2">
+            <div class="card-header"><div class="card-icon">💲</div><h3>Price Formatting</h3></div>
+            <div class="card-content">
+              <strong>Before:</strong> <code>'$4.99'</code> (String)<br>
+              <strong>Process:</strong> Stripped the '$' symbol, cast to float.<br>
+              <strong>After:</strong> <code>4.99</code> (Numeric)
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-3">
+            <div class="card-header"><div class="card-icon">👯</div><h3>Duplicates & Nulls</h3></div>
+            <div class="card-content">
+              <strong>Process:</strong> Dropped identical rows based on App name. Filled or dropped nulls in Rating and Type.<br>
+              <strong>Result:</strong> Reduced raw dataset to <strong>8,196</strong> unique, clean apps.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 4 — APP CATEGORIES ═══ -->
+    <div class="slide" id="slide-4">
+      <div class="slide-header reveal">
+        <div class="slide-icon">📁</div>
+        <h2>App Category Analysis</h2>
+        <span class="slide-tag">Market Share</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2">
+          <div class="card reveal reveal-delay-1">
+            <div class="chart-container">
+              <img src="charts/category_distribution.png" alt="Category Distribution">
+            </div>
+          </div>
+          <div class="flex-col gap-16">
+            <div class="card reveal reveal-delay-2">
+              <div class="card-header"><div class="card-icon">👑</div><h3>Most Saturated Categories</h3></div>
+              <table class="data-table">
+                <thead><tr><th>Category</th><th>Count</th></tr></thead>
+                <tbody>
+                  <tr><td class="highlight">FAMILY</td><td class="text-accent fw-700">1,608</td></tr>
+                  <tr><td class="highlight">GAME</td><td class="text-accent fw-700">912</td></tr>
+                  <tr><td class="highlight">TOOLS</td><td class="text-accent fw-700">718</td></tr>
+                  <tr><td class="highlight">FINANCE</td><td>302</td></tr>
+                  <tr><td class="highlight">LIFESTYLE</td><td>301</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card reveal reveal-delay-3">
+              <div class="card-header"><div class="card-icon">💡</div><h3>Market Insight</h3></div>
+              <div class="card-content">
+                The market is extremely top-heavy. The top three categories (Family, Game, Tools) account for roughly <strong>40%</strong> of the entire ecosystem. Breaking into these saturated markets requires significant marketing muscle.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 5 — RATINGS & INSTALLS ═══ -->
+    <div class="slide" id="slide-5">
+      <div class="slide-header reveal">
+        <div class="slide-icon">⭐</div>
+        <h2>Ratings & Installs</h2>
+        <span class="slide-tag">User Behavior</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-3">
+          <div class="card reveal reveal-delay-1">
+             <div class="card-header"><div class="card-icon">📊</div><h3>Rating Distribution</h3></div>
+            <div class="chart-container" style="max-height: 180px;">
+              <img src="charts/rating_distribution.png" alt="Rating Distribution">
+            </div>
+            <p style="margin-top:12px;font-size:12px;color:var(--text-secondary);">Mean rating is <strong>4.19</strong>. The distribution is heavily left-skewed, showing users generally rate apps positively.</p>
+          </div>
+          <div class="card reveal reveal-delay-2">
+            <div class="card-header"><div class="card-icon">📉</div><h3>Size vs Installs</h3></div>
+            <div class="chart-container" style="max-height: 180px;">
+              <img src="charts/size_vs_installs.png" alt="Size vs Installs">
+            </div>
+             <p style="margin-top:12px;font-size:12px;color:var(--text-secondary);">While large apps exist, the apps with the absolute highest install tiers tend to be optimized for size.</p>
+          </div>
+          <div class="card reveal reveal-delay-3">
+            <div class="card-header"><div class="card-icon">🔍</div><h3>Interactive Exploration</h3></div>
+             <div class="card-content">
+              Created an interactive Plotly scatter plot (<code>interactive_rating_vs_installs.html</code>) to dynamically explore the relationship between Ratings, Installs, and Categories.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 6 — PRICING ═══ -->
+    <div class="slide" id="slide-6">
+      <div class="slide-header reveal">
+        <div class="slide-icon">💰</div>
+        <h2>Pricing & Monetization</h2>
+        <span class="slide-tag">Revenue</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2">
+           <div class="card reveal reveal-delay-1">
+            <div class="card-header"><div class="card-icon">🆓</div><h3>Free vs Paid</h3></div>
+            <div class="chart-container" style="max-height: 250px;">
+              <img src="charts/free_vs_paid.png" alt="Free vs Paid">
+            </div>
+             <p style="text-align: center; margin-top: 16px;"><strong>92.6% Free</strong> / <strong>7.4% Paid</strong></p>
+          </div>
+          <div class="flex-col gap-16">
+            <div class="card reveal reveal-delay-2">
+               <div class="card-header"><div class="card-icon">📈</div><h3>Estimated Category Revenue</h3></div>
+              <div class="chart-container" style="max-height: 200px;">
+                <img src="charts/category_revenue.png" alt="Category Revenue">
+              </div>
+            </div>
+            <div class="card reveal reveal-delay-3">
+               <div class="card-content" style="font-size: 13px;">
+                <em>Note: Revenue is a proxy estimate calculated as (Price × Installs). This represents the theoretical maximum direct sales revenue for paid apps.</em>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 7 — SENTIMENT ANALYSIS ═══ -->
+    <div class="slide" id="slide-7">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🧠</div>
+        <h2>NLP Sentiment Analysis</h2>
+        <span class="slide-tag">Reviews</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-3" style="margin-bottom: 24px;">
+           <div class="kpi-card reveal reveal-delay-1" style="border-top:3px solid var(--color-success);">
+            <span class="kpi-label">Positive Reviews</span>
+            <span class="kpi-value">20,625</span>
+            <span class="kpi-sub">Highest sentiment share</span>
+          </div>
+           <div class="kpi-card reveal reveal-delay-2" style="border-top:3px solid var(--text-dim);">
+            <span class="kpi-label">Neutral Reviews</span>
+            <span class="kpi-value">11,119</span>
+            <span class="kpi-sub">Factual / Mixed</span>
+          </div>
+          <div class="kpi-card reveal reveal-delay-3" style="border-top:3px solid var(--color-danger);">
+            <span class="kpi-label">Negative Reviews</span>
+            <span class="kpi-value">5,683</span>
+            <span class="kpi-sub">Lowest sentiment share</span>
+          </div>
+        </div>
+         <div class="card reveal reveal-delay-4">
+          <div class="card-header"><div class="card-icon">🤖</div><h3>TextBlob Implementation</h3></div>
+          <div class="card-content">
+            Applied TextBlob Natural Language Processing on the 64,295 <code>Translated_Review</code> records to extract polarity scores. The analysis reveals a generally positive ecosystem, though specific categories face harsher criticism.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 8 — SENTIMENT BY CATEGORY ═══ -->
+    <div class="slide" id="slide-8">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🏆</div>
+        <h2>Sentiment by Category</h2>
+        <span class="slide-tag">Niche Analysis</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2">
+          <div class="card reveal reveal-delay-1">
+             <div class="card-header"><div class="card-icon">🥇</div><h3>Highest Positive Sentiment</h3></div>
+            <table class="data-table">
+              <thead><tr><th>Category</th><th>% Positive</th></tr></thead>
+              <tbody>
+                <tr><td class="highlight">COMICS</td><td class="text-success fw-700">84.4%</td></tr>
+                <tr><td class="highlight">AUTO_AND_VEHICLES</td><td class="text-success fw-700">76.1%</td></tr>
+                <tr><td class="highlight">EVENTS</td><td class="text-success fw-700">75.9%</td></tr>
+                <tr><td class="highlight">HEALTH_AND_FITNESS</td><td class="text-success fw-700">71.8%</td></tr>
+                <tr><td class="highlight">EDUCATION</td><td class="text-success fw-700">71.1%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card reveal reveal-delay-2">
+            <div class="card-header"><div class="card-icon">💡</div><h3>Strategic Finding</h3></div>
+             <div class="card-content">
+              Niche categories like <strong>Comics</strong> and <strong>Events</strong> enjoy significantly higher user satisfaction than massive, saturated categories like Games or Social. This indicates highly engaged, passionate user bases in specialized markets.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 9 — DEVELOPER RECOMMENDATIONS ═══ -->
+    <div class="slide" id="slide-9">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🎯</div>
+        <h2>Developer Recommendations</h2>
+        <span class="slide-tag">Strategy</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-3">
+          <div class="rec-card reveal reveal-delay-1">
+            <div class="rec-number">01. Choose the Right Niche</div>
+            <div class="rec-insight">Avoid highly saturated markets</div>
+            <div class="rec-action">
+              <strong>Finding:</strong> Family, Games, and Tools are flooded.<br>
+              <strong>Action:</strong> Target high-sentiment niches like Health & Fitness or Education where users are more forgiving and engaged, offering easier organic discovery.
+            </div>
+          </div>
+           <div class="rec-card reveal reveal-delay-2">
+            <div class="rec-number">02. Monetization Strategy</div>
+            <div class="rec-insight">Embrace the Freemium model</div>
+            <div class="rec-action">
+              <strong>Finding:</strong> 92.6% of successful apps are free.<br>
+              <strong>Action:</strong> Do not rely on upfront paid downloads. Offer a high-quality free core experience and monetize through in-app purchases or ads.
+            </div>
+          </div>
+          <div class="rec-card reveal reveal-delay-3">
+            <div class="rec-number">03. Optimize App Size</div>
+            <div class="rec-insight">Keep initial downloads lightweight</div>
+            <div class="rec-action">
+              <strong>Finding:</strong> The apps with the highest install counts are generally optimized for size.<br>
+              <strong>Action:</strong> Keep the initial APK/bundle size low to reduce download friction, utilizing dynamic delivery for extra assets.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 10 — FINAL SUMMARY ═══ -->
+    <div class="slide" id="slide-10">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🏁</div>
+        <h2>Project Summary</h2>
+        <span class="slide-tag">Conclusion</span>
+      </div>
+      <div class="slide-body" style="justify-content:center;align-items:center;">
+        <div class="summary-flow reveal reveal-delay-1" style="margin-bottom:40px;">
+          <div class="flow-step">Clean</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Analyze</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Compare</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Understand Users</div>
+          <span class="flow-arrow">→</span>
+          <div class="flow-step">Recommend</div>
+        </div>
+         <div class="content-grid grid-3 reveal reveal-delay-2" style="max-width: 900px; margin: 0 auto; margin-bottom: 40px;">
+          <div class="card text-center"><div class="card-header" style="justify-content:center"><h3>Saturation</h3></div><div class="card-content">Family and Games dominate market volume.</div></div>
+          <div class="card text-center"><div class="card-header" style="justify-content:center"><h3>Monetization</h3></div><div class="card-content">The ecosystem is overwhelmingly free-to-play.</div></div>
+          <div class="card text-center"><div class="card-header" style="justify-content:center"><h3>Sentiment</h3></div><div class="card-content">Niche apps cultivate the highest user satisfaction.</div></div>
+        </div>
+        <div class="completion-badge reveal reveal-delay-3">
+          ✅ LEVEL 2 — TASK 4 COMPLETED
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="../shared-engine.js"></script>
+</body>
+</html>

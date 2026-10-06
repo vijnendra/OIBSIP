@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920,height=1080">
+  <meta name="description" content="Data Cleaning — Oasis Infobyte Data Analytics Internship Level 1 Task 3">
+  <title>Data Cleaning — Oasis Infobyte</title>
+  <link rel="stylesheet" href="../shared-styles.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="presentation">
+
+    <!-- ═══ SLIDE 1 — TITLE CARD ═══ -->
+    <div class="slide title-card active" id="slide-1">
+      <div class="org-badge reveal">
+        <span class="dot"></span>
+        OASIS INFOBYTE · DATA ANALYTICS INTERNSHIP
+      </div>
+      <h1 class="reveal reveal-delay-1">Data Cleaning</h1>
+      <p class="subtitle reveal reveal-delay-2">Transforming a corrupted dataset into a reliable, analysis-ready structure</p>
+      <div class="meta-row reveal reveal-delay-3">
+        <div class="meta-item">
+          <span class="meta-label">Intern</span>
+          <span class="meta-value">Vinny</span>
+        </div>
+        <span class="divider-dot"></span>
+        <div class="meta-item">
+          <span class="meta-label">Level</span>
+          <span class="meta-value">Level 1 — Task 3</span>
+        </div>
+        <span class="divider-dot"></span>
+        <div class="meta-item">
+          <span class="meta-label">Tools</span>
+          <span class="meta-value">Python · Pandas · Numpy</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 2 — THE PROBLEM ═══ -->
+    <div class="slide" id="slide-2">
+      <div class="slide-header reveal">
+        <div class="slide-icon">⚠️</div>
+        <h2>The Problem: Messy Data</h2>
+        <span class="slide-tag">Challenge</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-3">
+          <div class="card reveal reveal-delay-1">
+            <div class="card-header"><div class="card-icon">❓</div><h3>Missing Values</h3></div>
+            <div class="card-content">
+              Significant gaps in data, particularly in Age (273 nulls) and Cabin (730 nulls), undermining statistical reliability.
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-2">
+            <div class="card-header"><div class="card-icon">👯</div><h3>Duplicates</h3></div>
+            <div class="card-content">
+              Identical rows falsely inflating row counts and potentially biasing any downstream models.
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-3">
+            <div class="card-header"><div class="card-icon">🔀</div><h3>Inconsistencies</h3></div>
+            <div class="card-content">
+              Mismatched casing in categorical fields (e.g., 'MALE', 'm', 'male') and formatting artifacts (e.g., currency symbols in numeric columns) blocking mathematical operations.
+            </div>
+          </div>
+        </div>
+        <div class="card reveal reveal-delay-4" style="margin-top: 24px;">
+           <div class="card-header"><div class="card-icon">📏</div><h3>Extreme Outliers</h3></div>
+            <div class="card-content">
+              Impossible physiological values such as negative ages (-5) or ages exceeding realistic human lifespans (150, 250).
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 3 — DATA QUALITY REPORT ═══ -->
+    <div class="slide" id="slide-3">
+      <div class="slide-header reveal">
+        <div class="slide-icon">📋</div>
+        <h2>Data Quality Report (Before)</h2>
+        <span class="slide-tag">Audit</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2">
+          <div class="card reveal reveal-delay-1" style="border-top:3px solid var(--color-danger);">
+            <div class="card-header"><div class="card-icon">📊</div><h3>Dataset Dimensions</h3></div>
+            <div class="card-content">
+               <ul class="bullet-list">
+                <li><strong>Total Rows:</strong> 941</li>
+                <li><strong>Duplicate Rows:</strong> 21</li>
+                <li><strong>Total Columns:</strong> 12</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-2" style="border-top:3px solid var(--color-danger);">
+             <div class="card-header"><div class="card-icon">⚠️</div><h3>Datatype Issues</h3></div>
+             <div class="card-content">
+              <ul class="bullet-list">
+                <li><strong>Fare:</strong> Object type instead of float due to '$' symbols (e.g., '$71.28').</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="card reveal reveal-delay-3">
+           <div class="card-header"><div class="card-icon">❓</div><h3>Missing Values (Nulls)</h3></div>
+           <table class="data-table">
+              <thead><tr><th>Column</th><th>Null Count</th><th>Impact</th></tr></thead>
+              <tbody>
+                <tr><td class="highlight">Cabin</td><td class="text-danger fw-700">730</td><td>Severe missingness</td></tr>
+                <tr><td class="highlight">Age</td><td class="text-warning fw-700">273</td><td>Moderate missingness</td></tr>
+                <tr><td class="highlight">Fare</td><td class="text-warning fw-700">189</td><td>Moderate missingness</td></tr>
+                <tr><td class="highlight">Embarked</td><td>52</td><td>Low missingness</td></tr>
+              </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 4 — CLEANING PIPELINE ═══ -->
+    <div class="slide" id="slide-4">
+      <div class="slide-header reveal">
+        <div class="slide-icon">⚙️</div>
+        <h2>The Cleaning Pipeline</h2>
+        <span class="slide-tag">Process</span>
+      </div>
+      <div class="slide-body" style="justify-content:center;align-items:center;">
+        <div class="pipeline reveal reveal-delay-1" style="flex-wrap: wrap; gap: 16px;">
+          <div class="pipeline-step"><div class="step-icon">🗑️</div><div class="step-label">Raw Data</div></div>
+          <span class="pipeline-arrow">→</span>
+          <div class="pipeline-step"><div class="step-icon">👯</div><div class="step-label">Deduplicate</div><div class="step-sub">Drop identical rows</div></div>
+          <span class="pipeline-arrow">→</span>
+          <div class="pipeline-step"><div class="step-icon">🔤</div><div class="step-label">Standardize</div><div class="step-sub">Fix casing & strings</div></div>
+          <span class="pipeline-arrow">→</span>
+          <div class="pipeline-step"><div class="step-icon">📏</div><div class="step-label">Outliers</div><div class="step-sub">Filter anomalies</div></div>
+          <span class="pipeline-arrow">→</span>
+          <div class="pipeline-step"><div class="step-icon">🩹</div><div class="step-label">Impute</div><div class="step-sub">Fill missing values</div></div>
+          <span class="pipeline-arrow">→</span>
+          <div class="pipeline-step"><div class="step-icon">✨</div><div class="step-label">Clean Data</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 5 — BEFORE VS AFTER ═══ -->
+    <div class="slide" id="slide-5">
+      <div class="slide-header reveal">
+        <div class="slide-icon">⚖️</div>
+        <h2>Before → After Comparison</h2>
+        <span class="slide-tag">Results</span>
+      </div>
+      <div class="slide-body">
+         <div class="comparison-grid reveal reveal-delay-1">
+          <div class="comparison-panel before">
+            <h3>Before Cleaning</h3>
+            <table class="data-table">
+              <tr><td>Total Rows</td><td class="highlight">941</td></tr>
+              <tr><td>Duplicates</td><td class="highlight text-danger">21</td></tr>
+              <tr><td>Age Nulls</td><td class="highlight text-danger">273</td></tr>
+              <tr><td>Cabin Nulls</td><td class="highlight text-danger">730</td></tr>
+              <tr><td>Fare Type</td><td class="highlight text-danger">Object (String)</td></tr>
+            </table>
+          </div>
+          <div class="comparison-arrow">→</div>
+          <div class="comparison-panel after">
+            <h3>After Cleaning</h3>
+            <table class="data-table">
+              <tr><td>Total Rows</td><td class="highlight">920</td></tr>
+              <tr><td>Duplicates</td><td class="highlight text-success">11 (Natural)</td></tr>
+              <tr><td>Age Nulls</td><td class="highlight text-success">0</td></tr>
+              <tr><td>Cabin Nulls</td><td class="highlight text-success">0</td></tr>
+              <tr><td>Fare Type</td><td class="highlight text-success">Float64</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 6 — IMPORTANT DECISIONS ═══ -->
+    <div class="slide" id="slide-6">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🧠</div>
+        <h2>Significant Cleaning Decisions</h2>
+        <span class="slide-tag">Methodology</span>
+      </div>
+      <div class="slide-body">
+         <div class="content-grid grid-3">
+          <div class="card reveal reveal-delay-1">
+            <div class="card-header"><div class="card-icon">🔤</div><h3>String Normalization</h3></div>
+            <div class="card-content">
+              <strong>Problem:</strong> 'Sex' column contained 'MALE', 'm', 'male', 'FEMALE', 'f', 'female'.<br>
+              <strong>Method:</strong> Mapped to strict lowercase 'male' and 'female'.<br>
+              <strong>Reason:</strong> Standardizes categorical feature for future encoding.
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-2">
+            <div class="card-header"><div class="card-icon">🔢</div><h3>Datatype Correction</h3></div>
+            <div class="card-content">
+              <strong>Problem:</strong> 'Fare' contained '$' symbols, making it an Object type.<br>
+              <strong>Method:</strong> Stripped '$' and cast to Float64.<br>
+              <strong>Reason:</strong> Enables mathematical operations and statistical analysis.
+            </div>
+          </div>
+          <div class="card reveal reveal-delay-3">
+            <div class="card-header"><div class="card-icon">🏗️</div><h3>Cabin Feature Engineering</h3></div>
+            <div class="card-content">
+              <strong>Problem:</strong> 'Cabin' was 77% null (730 missing).<br>
+              <strong>Method:</strong> Created a new binary feature 'Has_Cabin' (1/0) and filled missing with 'Unknown'.<br>
+              <strong>Reason:</strong> Preserves the signal (having a cabin might indicate class/survival) without dropping the column.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 7 — OUTLIER VALIDATION ═══ -->
+    <div class="slide" id="slide-7">
+      <div class="slide-header reveal">
+        <div class="slide-icon">📏</div>
+        <h2>Outlier Handling: Age</h2>
+        <span class="slide-tag">Validation</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-2">
+           <div class="card reveal reveal-delay-1">
+            <div class="card-header"><div class="card-icon">📉</div><h3>Age Distribution (Before)</h3></div>
+            <div class="chart-container">
+              <img src="charts/age_outliers_before.png" alt="Age Outliers Before">
+            </div>
+          </div>
+          <div class="flex-col gap-16">
+            <div class="rec-card reveal reveal-delay-2" style="border-left: 3px solid var(--color-danger);">
+              <div class="rec-number">Anomaly Detection</div>
+              <div class="rec-insight">Impossible Physiological Values</div>
+              <div class="rec-action">
+                Detected ages of <strong>-5.0</strong>, <strong>150.0</strong>, and <strong>250.0</strong>. These represent data entry errors rather than statistical variance.
+              </div>
+            </div>
+             <div class="rec-card reveal reveal-delay-3" style="border-left: 3px solid var(--color-success);">
+              <div class="rec-number">Correction Method</div>
+              <div class="rec-insight">Neutralize and Impute</div>
+              <div class="rec-action">
+                Instead of dropping the entire passenger record (losing other valuable data), the anomalous ages were set to NaN. They were then imputed alongside other missing ages using group-based medians.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 8 — FINAL DATASET ═══ -->
+    <div class="slide" id="slide-8">
+      <div class="slide-header reveal">
+        <div class="slide-icon">✨</div>
+        <h2>The Final Dataset</h2>
+        <span class="slide-tag">Output</span>
+      </div>
+      <div class="slide-body">
+        <div class="content-grid grid-3-2">
+            <div class="card reveal reveal-delay-1">
+              <div class="card-header"><div class="card-icon">💾</div><h3>Cleaned Dataset Output</h3></div>
+              <div class="card-content">
+                  <table class="data-table" style="font-size: 11px;">
+                    <thead><tr><th>PassengerId</th><th>Survived</th><th>Sex</th><th>Age</th><th>Fare</th><th>Has_Cabin</th></tr></thead>
+                    <tbody>
+                      <tr><td>1</td><td>0</td><td>male</td><td>22.0</td><td>7.25</td><td>0</td></tr>
+                      <tr><td>2</td><td>1</td><td>female</td><td>38.0</td><td>71.28</td><td>1</td></tr>
+                      <tr><td>3</td><td>1</td><td>female</td><td>26.0</td><td><span class="text-warning">8.05</span></td><td>0</td></tr>
+                      <tr><td>4</td><td>1</td><td>female</td><td>35.0</td><td>53.10</td><td>1</td></tr>
+                      <tr><td>5</td><td>0</td><td>male</td><td>35.0</td><td>8.05</td><td>0</td></tr>
+                    </tbody>
+                  </table>
+                  <p style="margin-top:16px;font-size:12px;color:var(--text-muted);">
+                    Output saved to: <code>cleaned_dataset.csv</code> (920 rows, 13 columns)
+                  </p>
+              </div>
+            </div>
+            <div class="flex-col gap-16">
+               <div class="kpi-card reveal reveal-delay-2" style="border-top: 3px solid var(--color-success);">
+                <span class="kpi-label">Completeness</span>
+                <span class="kpi-value large">100%</span>
+                <span class="kpi-sub">All critical features imputed</span>
+              </div>
+              <div class="card reveal reveal-delay-3">
+                <div class="card-header"><div class="card-icon">✅</div><h3>Ready for Analysis</h3></div>
+                <div class="card-content">
+                  Dataset is structurally sound. Dtypes are corrected, duplicates removed, and text standardized. Ready for downstream machine learning or statistical modeling.
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SLIDE 9 — FINAL TAKEAWAY ═══ -->
+    <div class="slide" id="slide-9">
+      <div class="slide-header reveal">
+        <div class="slide-icon">🏁</div>
+        <h2>Final Takeaway</h2>
+        <span class="slide-tag">Conclusion</span>
+      </div>
+      <div class="slide-body" style="justify-content:center;align-items:center;">
+        <h1 style="font-size: 48px; font-weight: 800; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-align: center; margin-bottom: 32px;" class="reveal reveal-delay-1">
+          Reliable analysis starts with reliable data.
+        </h1>
+        <div class="content-grid grid-3 reveal reveal-delay-2" style="max-width: 900px; margin: 0 auto; margin-bottom: 40px;">
+          <div class="kpi-card"><span class="kpi-label">Rows Preserved</span><span class="kpi-value small">97.8%</span></div>
+          <div class="kpi-card"><span class="kpi-label">Nulls Handled</span><span class="kpi-value small">1,244</span></div>
+          <div class="kpi-card"><span class="kpi-label">Anomalies Fixed</span><span class="kpi-value small">3</span></div>
+        </div>
+        <div class="completion-badge reveal reveal-delay-3">
+          ✅ LEVEL 1 — TASK 3 COMPLETED
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="../shared-engine.js"></script>
+</body>
+</html>
